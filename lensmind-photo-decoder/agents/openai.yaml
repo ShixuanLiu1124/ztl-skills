@@ -1,0 +1,8 @@
+interface:
+  display_name: "LensMind Photo Decoder"
+  short_description: "Analyze samples and render teaching annotations."
+  default_prompt: "Use $lensmind-photo-decoder to analyze a photo sample and render a teaching annotation image."
+
+policy:
+  allow_implicit_invocation: true
+
