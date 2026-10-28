@@ -1,4 +1,4 @@
 interface:
   display_name: "摄影策划"
-  short_description: "按你的固定模板撰写摄影策划，细化妆造、道具和五类景别的机位与光位"
-  default_prompt: "使用 $photography-shoot-planner 按我的模板写一份摄影策划，根据我提供的主题、地点和时间细化妆造、道具与样片拍摄方案。"
+  short_description: "分析样片的远全中近特缺口，并据此写摄影策划初稿"
+  default_prompt: "使用 $photography-shoot-planner 分析我提供的样片，按远全中近特指出景别缺口，并为我写一份摄影策划初稿。"
