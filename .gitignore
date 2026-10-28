@@ -14,6 +14,17 @@ node_modules/
 .DS_Store
 Thumbs.db
 
+# Development tool metadata
+.cursor/
+.claude/
+.codex/
+.idea/
+.vscode/
+.vs/
+.fleet/
+.zed/
+*.code-workspace
+
 # Task data and temporary output
 work/
 outputs/
