@@ -1,0 +1,4 @@
+interface:
+  display_name: "摄影策划"
+  short_description: "按你的固定模板撰写摄影策划，细化妆造、道具和五类景别的机位与光位"
+  default_prompt: "使用 $photography-shoot-planner 按我的模板写一份摄影策划，根据我提供的主题、地点和时间细化妆造、道具与样片拍摄方案。"
