@@ -1,0 +1,84 @@
+{
+  "image_id": "flower-shadow-01",
+  "version": "LensMind Visual Annotation JSON v0.4",
+  "style_summary": {
+    "label": "花影奶油绿",
+    "description": "用近距离虚化花叶框住脸部，让暖黄色花朵、绿色前景和斑驳叶影共同制造柔软又有窥视感的春日人像。",
+    "palette": [
+      {"name": "奶油黄", "hex": "#E8C96B"},
+      {"name": "叶片绿", "hex": "#6D9B58"},
+      {"name": "柔肤色", "hex": "#E9C5A4"},
+      {"name": "深叶影", "hex": "#314832"}
+    ],
+    "shooting_hint": "把花叶放到镜头前，用侧前方阳光让影子落在脸上，再对焦眼睛。"
+  },
+  "shooting_summary": {
+    "camera_angle": "平视近距离",
+    "framing": "竖幅脸部特写",
+    "camera_distance": "镜头贴近花叶，人物在后方一臂左右",
+    "light_temperature": "偏暖自然光",
+    "light_quality": "穿过花叶的斑驳硬光",
+    "lens_feel": "中长焦浅景深"
+  },
+  "light_analysis": {
+    "direction": "画面左上方偏前，光线穿过花叶落到脸上",
+    "quality": "偏硬自然光，被花叶切碎后形成斑驳阴影",
+    "temperature": "偏暖",
+    "confidence": "medium",
+    "evidence": "脸部高光集中在右侧和中部，花叶轮廓在额头、鼻梁和脸颊上形成清晰影子",
+    "shooting_adjustment": "把枝条放在光源和人物之间，先让双眼保持清楚，再微调花叶让阴影落到额头和脸颊。"
+  },
+  "technical_estimate": {
+    "focal_length": {"value": "50–85mm equivalent", "confidence": "medium", "note": "脸部透视较自然，人物填满画面，接近中长焦近景。"},
+    "aperture": {"value": "f/1.8–f/2.8", "confidence": "medium", "note": "前景花叶明显虚化，眼睛附近是主要清晰区域。"},
+    "shutter_speed": {"value": "1/500s or faster", "confidence": "low", "note": "光线明亮，花叶边缘没有明显拖影。"},
+    "iso": {"value": "100–400", "confidence": "low", "note": "画面明亮且暗部噪点不明显。"},
+    "white_balance": {"value": "5200–6000K", "confidence": "medium", "note": "肤色和花朵偏暖，绿色仍保持自然。"}
+  },
+  "annotations": [
+    {
+      "id": "main-light",
+      "type": "arrow",
+      "category": "light_direction",
+      "label": "主光",
+      "description": "主光从画面左上方偏前穿过花叶，照亮脸部并把花叶影子投到额头和脸颊。",
+      "confidence": "medium",
+      "coordinates": {"from": {"x": 0.08, "y": 0.12}, "to": {"x": 0.32, "y": 0.32}}
+    },
+    {
+      "id": "foreground-frame",
+      "type": "point",
+      "category": "negative_space",
+      "label": "前景虚化",
+      "description": "镜头前的花叶被拍成大面积虚化色块，用来包围人物并制造层次。",
+      "confidence": "high",
+      "coordinates": {"x": 0.16, "y": 0.79}
+    },
+    {
+      "id": "camera-position",
+      "type": "camera_position",
+      "category": "camera_position",
+      "label": "机位",
+      "description": "机位接近眼睛高度，从花叶间向人物拍摄，保持脸部的亲密感。",
+      "confidence": "medium",
+      "coordinates": {"x": 0.84, "y": 0.86}
+    },
+    {
+      "id": "subject-focus",
+      "type": "point",
+      "category": "subject_position",
+      "label": "对焦眼睛",
+      "description": "人物眼睛是画面最重要的清晰区域，拍摄时先锁定靠近画面中央的眼睛。",
+      "confidence": "high",
+      "coordinates": {"x": 0.54, "y": 0.40}
+    }
+  ],
+  "rendering_rules": {
+    "coordinate_system": "normalized_0_1",
+    "max_annotations": 6,
+    "avoid_face_overlap": true,
+    "confidence_enum": ["high", "medium", "low"],
+    "show_label_on_image": true,
+    "show_description_on_hover": true
+  }
+}

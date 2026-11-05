@@ -1,30 +1,42 @@
 import argparse
 import json
+import os
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
 
 COLORS = {
-    "light_direction": (255, 213, 79, 255),
-    "subject_position": (129, 199, 132, 255),
-    "camera_position": (255, 112, 67, 255),
-    "composition_line": (79, 195, 247, 255),
-    "negative_space": (100, 181, 246, 70),
-    "pose_direction": (255, 213, 79, 255),
+    "light_direction": (245, 166, 76, 235),
+    "subject_position": (116, 181, 148, 225),
+    "camera_position": (229, 112, 92, 235),
+    "composition_line": (99, 168, 193, 225),
+    "negative_space": (99, 168, 193, 42),
+    "pose_direction": (245, 166, 76, 235),
 }
 
 
 def load_font(size):
+    configured = os.environ.get("LENSMIND_FONT")
     candidates = [
+        configured,
+        "/System/Library/Fonts/PingFang.ttc",
+        "/System/Library/Fonts/STHeiti Light.ttc",
+        "/Library/Fonts/Arial Unicode.ttf",
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
         r"C:\Windows\Fonts\msyh.ttc",
         r"C:\Windows\Fonts\simhei.ttf",
         r"C:\Windows\Fonts\arial.ttf",
     ]
     for candidate in candidates:
+        if not candidate:
+            continue
         if Path(candidate).exists():
             return ImageFont.truetype(candidate, size=size)
-    return ImageFont.load_default()
+    raise RuntimeError(
+        "No usable font found. Install a CJK font or set LENSMIND_FONT to a .ttf/.ttc file."
+    )
 
 
 def find_image(samples_dir, image_id):
@@ -57,21 +69,74 @@ def readable_text_color(color):
     return (20, 20, 20, 255) if luminance > 150 else (255, 255, 255, 255)
 
 
-def draw_label(draw, xy, text, font, image_size, color):
+def label_box(draw, xy, text, font, image_size):
     width, height = image_size
     x, y = xy
     bbox = draw.textbbox((0, 0), text, font=font)
     text_w = bbox[2] - bbox[0]
     text_h = bbox[3] - bbox[1]
-    pad_x = 12
-    pad_y = 8
+    pad_x = 11
+    pad_y = 7
 
     x = max(8, min(x, width - text_w - pad_x * 2 - 8))
     y = max(8, min(y, height - text_h - pad_y * 2 - 8))
-    box = (x, y, x + text_w + pad_x * 2, y + text_h + pad_y * 2)
-    bg = color[:3] + (225,)
-    draw.rounded_rectangle(box, radius=10, fill=bg, outline=(255, 255, 255, 145), width=2)
-    draw.text((x + pad_x, y + pad_y - 1), text, font=font, fill=readable_text_color(color))
+    return (x, y, x + text_w + pad_x * 2, y + text_h + pad_y * 2), pad_x, pad_y
+
+
+def boxes_overlap(first, second, gap=8):
+    return not (
+        first[2] + gap <= second[0]
+        or second[2] + gap <= first[0]
+        or first[3] + gap <= second[1]
+        or second[3] + gap <= first[1]
+    )
+
+
+def draw_label(draw, xy, text, font, image_size, color, occupied=None):
+    """Draw a quiet dark label and pick the least-colliding nearby position."""
+    if occupied is None:
+        occupied = []
+    x, y = xy
+    bbox, pad_x, pad_y = label_box(draw, (x, y), text, font, image_size)
+    width, height = image_size
+    box_w = bbox[2] - bbox[0]
+    box_h = bbox[3] - bbox[1]
+    candidates = [
+        (x, y), (x + 18, y - box_h - 8), (x + 18, y + box_h // 2),
+        (x - box_w - 18, y + box_h // 2), (x - box_w - 8, y - box_h - 8),
+        (x - box_w // 2, y + 18), (x - box_w // 2, y - box_h - 18),
+    ]
+    best = None
+    best_score = None
+    for candidate in candidates:
+        candidate_box, _, _ = label_box(draw, candidate, text, font, image_size)
+        overlap_count = sum(boxes_overlap(candidate_box, item) for item in occupied)
+        edge_penalty = sum(
+            max(0, 12 - value) for value in candidate_box[:2]
+        ) + max(0, candidate_box[2] - width + 12) + max(0, candidate_box[3] - height + 12)
+        score = overlap_count * 10000 + edge_penalty
+        if best_score is None or score < best_score:
+            best_score = score
+            best = (candidate_box, candidate)
+
+    box, _ = best
+    draw.rounded_rectangle(
+        box,
+        radius=9,
+        fill=(20, 23, 27, 218),
+        outline=color[:3] + (210,),
+        width=2,
+    )
+    # A small accent bar makes categories scannable without adding another loud color.
+    draw.rounded_rectangle(
+        (box[0], box[1], box[0] + 4, box[3]),
+        radius=2,
+        fill=color,
+    )
+    draw.text((box[0] + pad_x + 2, box[1] + pad_y - 1), text, font=font, fill=(248, 248, 246, 255))
+    if occupied is not None:
+        occupied.append(box)
+    return box
 
 
 def hex_to_rgba(value, alpha=255):
@@ -107,31 +172,31 @@ def append_style_summary(image, summary, shooting, font, small_font):
     palette = summary.get("palette", [])[:4]
     shooting_parts = []
     if shooting:
-        for key in ("camera_angle", "light_temperature", "framing"):
+        for key in ("camera_angle", "framing", "light_temperature", "light_quality"):
             value = shooting.get(key)
             if value:
                 shooting_parts.append(value)
-    shooting_text = " / ".join(shooting_parts)
+    shooting_text = "  ·  ".join(shooting_parts)
 
     pad = max(18, round(width * 0.018))
     swatch = max(24, round(width * 0.028))
     text_max_width = width - pad * 2
-    hint_lines = wrap_text(draw_probe, hint, small_font, text_max_width - (swatch + 8) * len(palette) - 12)
+    hint_lines = wrap_text(draw_probe, hint, small_font, text_max_width)
     shooting_lines = wrap_text(draw_probe, shooting_text, small_font, text_max_width)
     line_h = small_font.size + 8
-    panel_h = pad * 4 + swatch + 34 + line_h * (max(1, len(hint_lines)) + len(shooting_lines))
+    panel_h = pad * 5 + swatch + 54 + line_h * (max(1, len(hint_lines)) + len(shooting_lines))
 
     canvas = Image.new("RGB", (width, height + panel_h), (22, 22, 22))
     canvas.paste(image, (0, 0))
     draw = ImageDraw.Draw(canvas, "RGBA")
     y = height
 
-    draw.rectangle((0, y, width, y + panel_h), fill=(18, 18, 18, 255))
-    draw.line((0, y, width, y), fill=(255, 255, 255, 70), width=2)
-    draw.text((pad, y + pad - 2), label, font=font, fill=(255, 255, 255, 255))
+    draw.rectangle((0, y, width, y + panel_h), fill=(20, 23, 27, 255))
+    draw.line((0, y, width, y), fill=(245, 166, 76, 210), width=3)
+    draw.text((pad, y + pad - 2), label, font=font, fill=(248, 248, 246, 255))
 
     swatch_x = pad
-    swatch_y = y + pad * 2 + 30
+    swatch_y = y + pad * 2 + font.size + 10
     for item in palette:
         color = hex_to_rgba(item.get("hex", "#FFFFFF"))
         draw.rounded_rectangle(
@@ -144,16 +209,16 @@ def append_style_summary(image, summary, shooting, font, small_font):
         swatch_x += swatch + 8
 
     if hint:
-        text_x = pad + (swatch + 8) * len(palette) + 6
-        text_y = swatch_y - 2
+        text_x = pad
+        text_y = swatch_y + swatch + pad
         for line in hint_lines:
-            draw.text((text_x, text_y), line, font=small_font, fill=(255, 255, 255, 235))
+            draw.text((text_x, text_y), line, font=small_font, fill=(248, 248, 246, 235))
             text_y += line_h
 
     if shooting_text:
-        text_y = swatch_y + swatch + pad
+        text_y = swatch_y + swatch + pad + line_h * max(1, len(hint_lines)) + 4
         for line in shooting_lines:
-            draw.text((pad, text_y), line, font=small_font, fill=(255, 255, 255, 235))
+            draw.text((pad, text_y), line, font=small_font, fill=(178, 186, 190, 235))
             text_y += line_h
     return canvas
 
@@ -190,6 +255,7 @@ def render_one(json_path, samples_dir, output_dir):
     width, height = base.size
     overlay = Image.new("RGBA", base.size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
+    occupied_labels = []
 
     line_width = max(4, round(min(width, height) * 0.006))
     font = load_font(max(22, round(width * 0.026)))
@@ -248,12 +314,13 @@ def render_one(json_path, samples_dir, output_dir):
         elif ann_type == "polygon":
             points = [pt(p, width, height) for p in coords.get("points", [])]
             if len(points) >= 3:
-                draw.polygon(points, fill=color)
-                draw.line(points + [points[0]], fill=(100, 181, 246, 200), width=line_width)
+                draw.polygon(points, fill=color[:3] + (35,))
+                if category != "negative_space":
+                    draw.line(points + [points[0]], fill=color[:3] + (100,), width=max(2, line_width // 2))
                 label_anchor = (points[0][0] + 8, points[0][1] + 8)
 
         if label and label_anchor:
-            draw_label(draw, label_anchor, label, font, base.size, color)
+            draw_label(draw, label_anchor, label, font, base.size, color, occupied_labels)
 
     result = Image.alpha_composite(base, overlay).convert("RGB")
     result = append_style_summary(result, data.get("style_summary"), data.get("shooting_summary"), font, small_font)

@@ -70,6 +70,8 @@ visual check: pass / revise
 - labels readable: pass / revise
 - arrows understandable: pass / revise
 - style summary useful: pass / revise
+- label collisions: pass / revise
+- Chinese font rendering: pass / revise
 ```
 
 ## Output Files

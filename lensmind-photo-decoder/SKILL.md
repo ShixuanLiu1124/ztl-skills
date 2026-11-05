@@ -64,6 +64,8 @@ visual check: pass / revise
 - labels readable: pass / revise
 - arrows understandable: pass / revise
 - style summary useful: pass / revise
+- label collisions: pass / revise
+- Chinese font rendering: pass / revise
 ```
 
 8. If it passes, update `docs/approved-sample-library.md`.
@@ -96,6 +98,10 @@ Report-only fields:
 - `reports/<image_id>-notes.md`: optional compact direct-image analysis that is embedded into the final report.
 - `scripts/validate_annotations.py --root <root> --image-id <image_id>`: validate one JSON.
 - `scripts/render_annotations.py --root <root> --image-id <image_id>`: render one annotated image.
+
+The renderer prefers PingFang/Noto Sans CJK and supports an explicit font through the
+`LENSMIND_FONT` environment variable. It uses a dark, low-noise label style and tries
+multiple nearby positions to reduce label collisions.
 
 ## References
 
