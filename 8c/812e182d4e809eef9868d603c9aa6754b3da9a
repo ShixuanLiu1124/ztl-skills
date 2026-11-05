@@ -1,0 +1,60 @@
+photography-shoot-planner/references/planning-template.md
+  s_375ac48847ab72::t_f192ab2bfdf920 16-23,75
+  s_375ac48847ab72::t_cecaeb65e3aac4 77
+lensmind-photo-decoder/scripts/render_annotations.py
+  s_375ac48847ab72::t_cecaeb65e3aac4 3,10-15,20,22-27,33-34,37-39,72,78-79,83-139,175,179,184,187,194-196,199,212-213,215,219,221,258,317-319,323
+lensmind-photo-decoder/SKILL.md
+  s_375ac48847ab72::t_cecaeb65e3aac4 67-68,102-105
+lensmind-demo/annotations/flower-shadow-01.json
+  s_30cb8526d39f59::t_b6779e26beed6e 64
+  s_30cb8526d39f59::t_dc66bd3fb54e15 1-49,51-54,56-63,65-84
+  s_30cb8526d39f59::t_f0535d6f8c4652 50,55
+秋日摄影策划/秋日摄影策划.md
+  s_8f3e52c3914829::t_2847a79ee70c87 1-63,65,67,69,84-142
+  s_8f3e52c3914829::t_cad53ef565384a 64,66,68,70-83
+lensmind-photo-decoder/references/quick-rules.md
+  s_375ac48847ab72::t_cecaeb65e3aac4 73-74
+lensmind-demo/reports/flower-shadow-01-notes.md
+  s_30cb8526d39f59::t_dc66bd3fb54e15 1-48
+lensmind-demo/reports/flower-shadow-01-analysis.md
+  s_30cb8526d39f59::t_485b23f9b56453 1-132
+photography-shoot-planner/SKILL.md
+  s_375ac48847ab72::t_f192ab2bfdf920 36-41,61-64,69,71
+  s_375ac48847ab72::t_cecaeb65e3aac4 83
+秋日摄影策划/秋日摄影策划.html
+  s_8f3e52c3914829::t_cad53ef565384a 33-35
+  s_375ac48847ab72::t_f192ab2bfdf920 12-14
+  s_8f3e52c3914829::t_2847a79ee70c87 1-11,15-32,36-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "8c812e182d4e809eef9868d603c9aa6754b3da9a",
+  "prompts": {},
+  "sessions": {
+    "s_30cb8526d39f59": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a185a5-5625-7d13-a5f3-1b5288e535cb",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": null
+    },
+    "s_375ac48847ab72": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1aaaa-ffca-7ec2-80b0-45778fead247",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "liushixuan.6 <liushixuan.6@jd.com>"
+    },
+    "s_8f3e52c3914829": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1853e-556e-7a11-9a8a-3e635713ad00",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": null
+    }
+  }
+}
