@@ -1,0 +1,23 @@
+photography-shoot-planner/SKILL.md
+  s_9ea702a746e83b::t_cce20a260df78d 15,19,21-23,25,27-29,33,76
+  s_9ea702a746e83b::t_79485b01024fa2 3
+photography-shoot-planner/references/planning-template.md
+  s_9ea702a746e83b::t_79485b01024fa2 3
+  s_9ea702a746e83b::t_029af4934cb568 77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "d1f09ea194b66c7961ef0e0aa97a3af1f89067d5",
+  "prompts": {},
+  "sessions": {
+    "s_9ea702a746e83b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1e2f9-d235-7202-8239-9870072dc356",
+        "model": "gpt-6-sol"
+      },
+      "human_author": "liushixuan.6 <liushixuan.6@jd.com>"
+    }
+  }
+}
